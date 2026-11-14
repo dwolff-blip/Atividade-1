@@ -1,6 +1,7 @@
 /* ==========================================================================
-   Etapa 2 — Estilização com CSS
-   Separação entre conteúdo/estrutura (HTML) e apresentação (CSS)
+   Etapa 3 — Layout Responsivo (Mobile First)
+   Base: dispositivos móveis (~375px)
+   Media Queries: Tablet (>= 768px) e Desktop (>= 1200px)
    ========================================================================== */
 
 :root {
@@ -17,18 +18,31 @@
     --raio-borda: 8px;
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.6;
     color: var(--cor-texto);
     background-color: var(--cor-fundo);
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Links */
@@ -36,7 +50,7 @@ a {
     color: var(--cor-destaque);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s ease, background-color 0.2s ease;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 a:hover {
@@ -44,63 +58,40 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Divisores HTML mantidos sutis */
+/* Divisores visuais substituídos pelo espaçamento de Flexbox/Grid */
 hr {
-    border: 0;
-    border-top: 1px solid var(--cor-borda-suave);
-    margin: 24px 0;
+    display: none;
 }
 
-/* Cabeçalho */
+/* ==========================================================================
+   Cabeçalho e Navegação (Mobile First)
+   ========================================================================== */
+
 header {
     background-color: var(--cor-primaria);
     color: #f8fafc;
-    padding: 24px 32px 40px;
+    padding: 1.25rem 1rem 2rem;
     text-align: center;
     border-bottom: 4px solid var(--cor-destaque);
 }
 
-header hr {
-    border-top-color: rgba(255, 255, 255, 0.12);
-    max-width: 900px;
-    margin: 20px auto;
-}
-
-header h1 {
-    margin: 16px 0 8px;
-    font-size: 2.2rem;
-    color: #ffffff;
-    letter-spacing: -0.5px;
-}
-
-header p {
-    margin: 8px auto;
-    max-width: 680px;
-    color: #cbd5e1;
-}
-
-header strong {
-    color: #38bdf8;
-}
-
-/* Navegação */
 nav ul {
     list-style: none;
-    margin: 0;
+    margin: 0 0 1.5rem;
     padding: 0;
-}
-
-nav li {
-    display: inline-block;
-    margin: 4px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 nav a {
-    display: inline-block;
-    padding: 8px 14px;
+    display: block;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
     color: #e2e8f0;
+    background-color: rgba(255, 255, 255, 0.04);
     border-radius: var(--raio-borda);
-    border: 1px solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 nav a:hover {
@@ -110,21 +101,46 @@ nav a:hover {
     text-decoration: none;
 }
 
+header h1 {
+    margin: 0.5rem 0;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+}
+
+header p {
+    margin: 0.5rem auto;
+    max-width: 42rem;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+}
+
+header strong {
+    color: #38bdf8;
+}
+
 /* Foto de perfil */
 figure {
-    margin: 24px auto;
+    margin: 1.25rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 figure img {
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     border: 4px solid var(--cor-destaque);
     object-fit: cover;
+    object-position: top;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 figcaption {
-    margin-top: 10px;
-    font-size: 0.9rem;
+    margin-top: 0.625rem;
+    font-size: 0.875rem;
     color: #94a3b8;
 }
 
@@ -132,22 +148,21 @@ figcaption {
 header > ul {
     list-style: none;
     padding: 0;
-    margin: 12px 0 0;
-}
-
-header > ul li {
-    display: inline-block;
-    margin: 4px 6px;
+    margin: 0.75rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 header > ul a {
     display: inline-block;
-    padding: 6px 14px;
+    padding: 0.45rem 0.9rem;
     background-color: var(--cor-secundaria);
     color: #f8fafc;
     border: 1px solid #334155;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
 }
 
 header > ul a:hover {
@@ -157,72 +172,94 @@ header > ul a:hover {
     text-decoration: none;
 }
 
-/* Conteúdo Principal */
+/* ==========================================================================
+   Conteúdo Principal (Mobile First: 1 coluna)
+   ========================================================================== */
+
 main {
-    max-width: 900px;
-    margin: 32px auto;
-    padding: 0 20px;
+    width: 100%;
+    padding: 1.25rem 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
 }
 
 section {
     background-color: var(--cor-superficie);
     border: 1px solid var(--cor-borda-suave);
     border-radius: var(--raio-borda);
-    padding: 28px 32px;
+    padding: 1.25rem;
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
 section h2 {
     margin-top: 0;
-    margin-bottom: 16px;
-    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
     color: var(--cor-primaria);
     border-left: 4px solid var(--cor-destaque);
-    padding-left: 12px;
+    padding-left: 0.75rem;
+}
+
+#experiencias {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+#experiencias h2 {
+    margin-bottom: 0;
 }
 
 article {
     background-color: #f8fafc;
     border: 1px solid var(--cor-borda-suave);
     border-radius: var(--raio-borda);
-    padding: 18px 22px;
-    margin-top: 16px;
+    padding: 1rem 1.125rem;
 }
 
 article h3 {
     margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.15rem;
+    margin-bottom: 0.625rem;
+    font-size: 1.08rem;
     color: var(--cor-secundaria);
 }
 
 section ul {
-    padding-left: 20px;
+    padding-left: 1.25rem;
     margin-bottom: 0;
 }
 
 section li {
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 }
 
-/* Formulário de Contato */
+/* ==========================================================================
+   Formulário de Contato (Mobile First)
+   ========================================================================== */
+
 form fieldset {
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-borda);
-    padding: 20px 24px;
+    padding: 1rem;
+    margin: 0;
     background-color: #f8fafc;
 }
 
 form legend {
-    padding: 0 10px;
+    padding: 0 0.5rem;
     font-weight: 600;
     color: var(--cor-primaria);
+}
+
+form p {
+    margin: 0 0 0.875rem;
 }
 
 form label {
     display: inline-block;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 0.25rem;
     color: var(--cor-secundaria);
 }
 
@@ -230,14 +267,19 @@ form input[type="text"],
 form input[type="email"],
 form textarea {
     width: 100%;
-    padding: 10px 12px;
+    max-width: 100%;
+    padding: 0.625rem 0.75rem;
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--cor-primaria);
     background-color: #ffffff;
     border: 1px solid var(--cor-borda);
     border-radius: 6px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+form textarea {
+    resize: vertical;
 }
 
 form input[type="text"]:focus,
@@ -249,14 +291,15 @@ form textarea:focus {
 }
 
 form button {
-    padding: 10px 20px;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
     font-family: inherit;
     font-size: 0.95rem;
     font-weight: 600;
     border-radius: 6px;
     cursor: pointer;
     border: 1px solid transparent;
-    margin-right: 8px;
+    margin-top: 0.5rem;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -279,30 +322,32 @@ form button[type="reset"]:hover {
     background-color: #cbd5e1;
 }
 
-/* Rodapé */
+/* ==========================================================================
+   Rodapé (Mobile First)
+   ========================================================================== */
+
 footer {
     background-color: var(--cor-primaria);
     color: #cbd5e1;
     text-align: center;
-    padding: 32px 20px;
-    margin-top: 40px;
+    padding: 2rem 1rem;
+    margin-top: 1.5rem;
     border-top: 4px solid var(--cor-destaque);
 }
 
 footer h2 {
     margin-top: 0;
     color: #ffffff;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
 }
 
 footer ul {
     list-style: none;
     padding: 0;
-    margin: 16px 0;
-}
-
-footer li {
-    margin: 6px 0;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 footer a {
@@ -314,7 +359,106 @@ footer a:hover {
 }
 
 footer p {
-    margin: 10px 0 0;
-    font-size: 0.9rem;
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
     color: var(--cor-texto-suave);
+}
+
+/* ==========================================================================
+   Tablet (~768px)
+   ========================================================================== */
+
+@media (min-width: 768px) {
+    header {
+        padding: 1.75rem 2rem 2.5rem;
+    }
+
+    nav ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    nav a {
+        width: auto;
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    header h1 {
+        font-size: 2.15rem;
+    }
+
+    figure img {
+        width: 170px;
+        height: 170px;
+    }
+
+    main {
+        max-width: 768px;
+        margin: 1.5rem auto;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    section {
+        padding: 1.75rem 2rem;
+    }
+
+    section h2 {
+        font-size: 1.45rem;
+    }
+
+    #experiencias {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #experiencias h2 {
+        grid-column: 1 / -1;
+    }
+
+    form fieldset {
+        padding: 1.25rem 1.5rem;
+    }
+
+    form button {
+        width: auto;
+        margin-right: 0.5rem;
+    }
+
+    footer ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Desktop (>= 1200px)
+   ========================================================================== */
+
+@media (min-width: 1200px) {
+    header h1 {
+        font-size: 2.4rem;
+    }
+
+    figure img {
+        width: 180px;
+        height: 180px;
+    }
+
+    main {
+        max-width: 1140px;
+        margin: 2rem auto;
+        padding: 1.5rem 2rem;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.75rem;
+        align-items: start;
+    }
+
+    #experiencias {
+        grid-column: 1 / -1;
+    }
 }
